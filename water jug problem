@@ -1,0 +1,53 @@
+class Node:
+    def __init__(self, state, parent=None):
+        self.state = state
+        self.parent = parent
+
+    def __eq__(self, other):
+        return self.state == other.state
+
+    def successors(self, capacity1, capacity2):
+        x, y = self.state
+        states = [
+            (capacity1, y), (x, capacity2), (0, y), (x, 0),
+            (min(x + y, capacity1), max(0, x + y - capacity1)),
+            (max(0, y + x - capacity2), min(y + x, capacity2))
+        ]
+        return [Node(state) for state in states if state != self.state]
+
+def find_path(node):
+    path = []
+    while node:
+        path.insert(0, node.state)
+        node = node.parent
+    return path
+
+def water_jug(capacity1, capacity2, target):
+    start = Node((0, 0))
+    frontier = [start]
+    explored = set()
+
+    while frontier:
+        node = frontier.pop(0)
+        explored.add(node.state)
+
+        if target in node.state:
+            return find_path(node)
+
+        for child in node.successors(capacity1, capacity2):
+            if child.state not in explored and child not in frontier:
+                child.parent = node
+                frontier.append(child)
+
+    return None
+capacity1 = int(input("Enter the capacity of jug 1: "))
+capacity2 = int(input("Enter the capacity of jug 2: "))
+target = int(input("Enter the target amount of water: "))
+path = water_jug(capacity1, capacity2, target)
+
+if path:
+    print("Solution found:")
+    for state in path:
+        print(state)
+else:
+    print("No solution found.")
