@@ -1,0 +1,27 @@
+'''bfs'''
+from collections import deque
+graph = {}
+num_edges = int(input("Enter the number of edges: "))
+print("Enter edges in the format 'source destination', one pair per line:")
+
+for _ in range(num_edges):
+    source, destination = input().split()
+    if source not in graph:
+        graph[source] = []
+    graph[source].append(destination)
+start_node = input("Enter the starting node: ")
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    visited.add(start)
+
+    while queue:
+        vertex = queue.popleft()
+        print(vertex, end=' ')
+
+        for neighbour in graph.get(vertex, []):
+            if neighbour not in visited:
+                queue.append(neighbour)
+                visited.add(neighbour)
+print("Following is the Breadth-First Search")
+bfs(graph, start_node)
