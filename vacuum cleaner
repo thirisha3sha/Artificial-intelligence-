@@ -1,0 +1,36 @@
+'''vacuum cleaner problem'''
+class VacuumCleaner:
+    def __init__(self, location, status):
+        self.location = location
+        self.status = status  # 'clean' or 'dirty'
+
+    def clean(self):
+        self.status = 'clean'
+
+    def move(self, location):
+        self.location = location
+
+    def is_dirty(self):
+        return self.status == 'dirty'
+
+def vacuum_cleaner_problem(env):
+    actions = []
+    while any([vacuum.is_dirty() for vacuum in env]):
+        for vacuum in env:
+            if vacuum.is_dirty():
+                actions.append(f"Clean {vacuum.location} ")
+                vacuum.clean()
+            actions.append(f"Move to {1 - vacuum.location} ")
+            vacuum.move(1 - vacuum.location)
+    return actions
+num_vacuums = int(input("Enter the number of vacuum cleaners: "))
+env = []
+for i in range(num_vacuums):
+    location = int(input(f"Enter location (0 or 1) for vacuum {i + 1}: "))
+    status = input(f"Enter status (clean or dirty) for vacuum {i + 1}: ")
+    vacuum = VacuumCleaner(location, status)
+    env.append(vacuum)
+actions = vacuum_cleaner_problem(env)
+print("\nActions to clean the environment:")
+for action in actions:
+    print(action)
