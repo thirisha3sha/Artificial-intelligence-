@@ -1,0 +1,22 @@
+'''dfs'''
+visited = set()
+def dfs(visited, graph, node):
+    if node not in visited:
+        print(node)
+        visited.add(node)
+        # Check if the node has outgoing edges
+        if node in graph:
+            for neighbour in graph[node]:
+                dfs(visited, graph, neighbour)
+graph = {}
+num_edges = int(input("Enter the number of edges: "))
+print("Enter edges in the format 'source destination', one pair per line:")
+
+for _ in range(num_edges):
+    source, destination = input().split()
+    if source not in graph:
+        graph[source] = []
+    graph[source].append(destination)
+start_node = input("Enter the starting node: ")
+print("Following is the Depth-First Search")
+dfs(visited, graph, start_node)
