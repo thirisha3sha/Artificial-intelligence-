@@ -1,0 +1,60 @@
+'''a* search'''
+import heapq
+
+def heuristic(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+def astar(start, goal, obstacles):
+    open_set = [(0, start)]
+    came_from = {}
+    g_score = {start: 0}
+
+    while open_set:
+        current_score, current = heapq.heappop(open_set)
+
+        if current == goal:
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            return path[::-1]
+
+        for dr, dc in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+            neighbor = current[0] + dr, current[1] + dc
+            tentative_g_score = g_score[current] + 1
+
+            if 0 <= neighbor[0] < len(obstacles) and 0 <= neighbor[1] < len(obstacles[0]) and not obstacles[neighbor[0]][neighbor[1]]:
+                if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
+                    came_from[neighbor] = current
+                    g_score[neighbor] = tentative_g_score
+                    f_score = tentative_g_score + heuristic(neighbor, goal)
+                    heapq.heappush(open_set, (f_score, neighbor))
+
+    return None
+
+def main():
+    rows = int(input("Enter the number of rows: "))
+    cols = int(input("Enter the number of columns: "))
+
+    start_row = int(input("Enter the start row: "))
+    start_col = int(input("Enter the start column: "))
+    start = (start_row, start_col)
+
+    goal_row = int(input("Enter the goal row: "))
+    goal_col = int(input("Enter the goal column: "))
+    goal = (goal_row, goal_col)
+
+    obstacles = []
+    print("Enter 1 for obstacles and 0 for open spaces:")
+    for _ in range(rows):
+        row = [int(x) for x in input().split()]
+        obstacles.append(row)
+
+    path = astar(start, goal, obstacles)
+    if path:
+        print("Shortest path found:", path)
+    else:
+        print("No path found")
+
+if __name__ == "__main__":
+    main()
